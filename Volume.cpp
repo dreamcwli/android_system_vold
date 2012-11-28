@@ -415,18 +415,9 @@ int Volume::mountVol() {
          * muck with it before exposing it to non priviledged users.
          */
         errno = 0;
-        int gid;
 
-        if (primaryStorage) {
-            // Special case the primary SD card.
-            // For this we grant write access to the SDCARD_RW group.
-            gid = AID_SDCARD_RW;
-        } else {
-            // For secondary external storage we keep things locked up.
-            gid = AID_MEDIA_RW;
-        }
         if (Fat::doMount(devicePath, "/mnt/secure/staging", false, false, false,
-                AID_SYSTEM, gid, 0702, true)) {
+                AID_SYSTEM, AID_SDCARD_RW, 0702, true)) {
             SLOGE("%s failed to mount via VFAT (%s)\n", devicePath, strerror(errno));
             continue;
         }
